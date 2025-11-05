@@ -32,3 +32,5 @@ But it was too lazy to look for it and I just asked Grok to do the conversion fo
 The process I used in art class caused the image to be flipped.
 I didn't know if that was a bug or a feature.
 I made the HTML version flip any time you click on it.
+
+[See it for yourself.](https://tradeideasphilip.github.io/monochromatic-portrait/)
