@@ -6,11 +6,13 @@ I decided to repeat the exercise with web tools.
 
 I started from the same grayscale image as in art class.
 
-I created a function `grayscaleToOrangePalette()`.
-The input is a "value", the brightness of the original pixel.
-If the requested value is exactly the value of orange, return orange.
-If the requested value is brighter, mix orange and white to get a color with the right value.
-If the requested value is darker, mix orange and black.
+I created a function `grayscaleToPalette()`.
+The first input is the "value".
+That's the brightness of the original pixel and of the color that we are creating.
+The second input is the base color used to create the monochromatic pallette.  
+If the requested value exactly matches the values of the base color, return that color.
+If the requested value is brighter, mix the base color with white to get a color with the right value.
+If the requested value is darker, mix the base color with black.
 I created a sample with 10 specific values, which you can see at the bottom of the page.
 
 Next I had to choose which 5 colors to use.
@@ -33,3 +35,4 @@ I didn't know if that was a bug or a feature.
 I made the HTML version flip any time you click on it.
 
 [See it for yourself.](https://tradeideasphilip.github.io/monochromatic-portrait/)
+Adjust the settings and watch the results.

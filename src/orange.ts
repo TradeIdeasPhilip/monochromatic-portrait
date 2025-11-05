@@ -2,43 +2,6 @@
 
 import { querySelectorAll } from "phil-lib/client-misc";
 
-// Function from previous answer
-function grayscaleToOrangePalette(gray: number): string {
-  const value = Math.max(0, Math.min(255, gray));
-  const ORANGE = { r: 255, g: 165, b: 0 };
-  const orangeLuminance =
-    0.299 * ORANGE.r + 0.587 * ORANGE.g + 0.114 * ORANGE.b; // ~182.35
-
-  //const BLACK = { r: 0, g: 0, b: 0 };
-  const WHITE = { r: 255, g: 255, b: 255 };
-
-  let r: number, g: number, b: number;
-
-  if (Math.abs(value - orangeLuminance) < 0.01) {
-    r = ORANGE.r;
-    g = ORANGE.g;
-    b = ORANGE.b;
-  } else if (value > orangeLuminance) {
-    const t = (value - orangeLuminance) / (255 - orangeLuminance);
-    r = ORANGE.r + t * (WHITE.r - ORANGE.r);
-    g = ORANGE.g + t * (WHITE.g - ORANGE.g);
-    b = ORANGE.b + t * (WHITE.b - ORANGE.b);
-  } else {
-    const t = value / orangeLuminance;
-    r = t * ORANGE.r;
-    g = t * ORANGE.g;
-    b = t * ORANGE.b;
-  }
-
-  r = Math.round(r);
-  g = Math.round(g);
-  b = Math.round(b);
-
-  return `#${r.toString(16).padStart(2, "0")}${g
-    .toString(16)
-    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`.toUpperCase();
-}
-
 export function showPaletteSamples(baseColor: string) {
   querySelectorAll(".delete-me", HTMLDivElement, 0).forEach((oldContainer) => {
     oldContainer.remove();
@@ -129,23 +92,6 @@ export function showPaletteSamples(baseColor: string) {
 
   document.body.appendChild(container);
 }
-
-/**
- * These are the colors that I chose.
- * 26
-#261900
-77
-#714900
-128
-#BD7A00
-179
-#FFAB12
-230
-#FFE4B1
- */
-
-// This is why it's easiest to partition the values into 5 **equal** pieces.
-// https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/feComponentTransfer
 
 /**
  * Maps a grayscale value (0-255) to a monochromatic palette defined by a base color.
