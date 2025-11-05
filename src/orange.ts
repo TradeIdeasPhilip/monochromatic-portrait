@@ -1,5 +1,7 @@
 // === Paste this into a .ts file or <script type="module"> === (Mostly written by Grok)
 
+import { querySelectorAll } from "phil-lib/client-misc";
+
 // Function from previous answer
 function grayscaleToOrangePalette(gray: number): string {
   const value = Math.max(0, Math.min(255, gray));
@@ -37,9 +39,12 @@ function grayscaleToOrangePalette(gray: number): string {
     .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`.toUpperCase();
 }
 
-// === Test UI: 10 steps from black to white ===
-function createPaletteTest() {
+export function showPaletteSamples(baseColor: string) {
+  querySelectorAll(".delete-me", HTMLDivElement, 0).forEach((oldContainer) => {
+    oldContainer.remove();
+  });
   const container = document.createElement("div");
+  container.classList.add("delete-me");
   container.style.fontFamily = "Arial, sans-serif";
   container.style.padding = "20px";
   container.style.background = "#f0f0f0";
@@ -48,16 +53,16 @@ function createPaletteTest() {
   container.style.margin = "20px auto";
   container.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
 
-  function showHeading(text:string){
-  const title = document.createElement("h3");
-  title.textContent = text;
-  title.style.margin = "0 0 16px 0";
-  title.style.textAlign = "center";
-  container.appendChild(title);
+  function showHeading(text: string) {
+    const title = document.createElement("h3");
+    title.textContent = text;
+    title.style.margin = "0 0 16px 0";
+    title.style.textAlign = "center";
+    container.appendChild(title);
   }
 
   function showColor(grayValue: number) {
-    const orangeColor = grayscaleToOrangePalette(grayValue);
+    const finalColor = grayscaleToPalette(grayValue, baseColor);
     const grayColor = `#${grayValue.toString(16).padStart(2, "0").repeat(3)}`;
 
     const row = document.createElement("div");
@@ -81,35 +86,37 @@ function createPaletteTest() {
     grayDiv.textContent = `${grayValue}`;
     row.appendChild(grayDiv);
 
-    // Right: Orange palette
-    const orangeDiv = document.createElement("div");
-    orangeDiv.style.backgroundColor = orangeColor;
-    orangeDiv.style.width = "50%";
-    orangeDiv.style.height = "40px";
-    orangeDiv.style.display = "flex";
-    orangeDiv.style.alignItems = "center";
-    orangeDiv.style.justifyContent = "center";
-    orangeDiv.style.color = grayValue > 140 ? "black" : "white";
-    orangeDiv.style.fontSize = "12px";
-    orangeDiv.style.fontWeight = "bold";
-    orangeDiv.textContent = orangeColor;
-    row.appendChild(orangeDiv);
+    // Right: Monochromatic palette
+    const monochromaticDiv = document.createElement("div");
+    monochromaticDiv.style.backgroundColor = finalColor;
+    monochromaticDiv.style.width = "50%";
+    monochromaticDiv.style.height = "40px";
+    monochromaticDiv.style.display = "flex";
+    monochromaticDiv.style.alignItems = "center";
+    monochromaticDiv.style.justifyContent = "center";
+    monochromaticDiv.style.color = grayValue > 140 ? "black" : "white";
+    monochromaticDiv.style.fontSize = "12px";
+    monochromaticDiv.style.fontWeight = "bold";
+    monochromaticDiv.textContent = finalColor;
+    row.appendChild(monochromaticDiv);
 
     container.appendChild(row);
   }
-  showHeading("Colors Used")
+  showHeading("Colors Used");
   const shortN = 5;
   for (let i = 0; i < shortN; i++) {
     const grayValue = Math.round(((i + 0.5) / shortN) * 255);
     showColor(grayValue);
   }
-  showHeading("Initial Pallette")
+  showHeading("Larger Pallette");
   const longN = 10;
   for (let i = 0; i < longN; i++) {
-    const grayValue = Math.round(((i) / (longN - 1)) * 255);
+    const grayValue = Math.round((i / (longN - 1)) * 255);
     showColor(grayValue);
   }
 
+  // TODO make this work!
+  /*
   // Footer note
   const note = document.createElement("p");
   note.style.fontSize = "12px";
@@ -118,12 +125,10 @@ function createPaletteTest() {
   note.style.margin = "16px 0 0 0";
   note.innerHTML = `Orange (#FFA500) appears at luminance ≈182<br>Linear RGB interpolation used`;
   container.appendChild(note);
+  */
 
   document.body.appendChild(container);
 }
-
-// Run it
-createPaletteTest();
 
 /**
  * These are the colors that I chose.
@@ -141,3 +146,107 @@ createPaletteTest();
 
 // This is why it's easiest to partition the values into 5 **equal** pieces.
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/feComponentTransfer
+
+/**
+ * Maps a grayscale value (0-255) to a monochromatic palette defined by a base color.
+ * - 0 → black
+ * - luminance(base) → base color
+ * - 255 → white
+ * @param value Grayscale input (0-255)
+ * @param baseColorHex Base color in #RRGGBB format (e.g. "#FFA500")
+ * @returns Hex color string (e.g. "#FFAB12")
+ */
+export function grayscaleToPalette(
+  value: number,
+  baseColorHex: string
+): string {
+  // Clamp
+  const v = Math.max(0, Math.min(255, value));
+
+  // Parse base color
+  const rHex = baseColorHex.slice(1, 3);
+  const gHex = baseColorHex.slice(3, 5);
+  const bHex = baseColorHex.slice(5, 7);
+  const BASE = {
+    r: parseInt(rHex, 16),
+    g: parseInt(gHex, 16),
+    b: parseInt(bHex, 16),
+  };
+
+  // Compute luminance of base color
+  const baseLuminance = 0.299 * BASE.r + 0.587 * BASE.g + 0.114 * BASE.b;
+
+  const BLACK = { r: 0, g: 0, b: 0 };
+  const WHITE = { r: 255, g: 255, b: 255 };
+
+  let r: number, g: number, b: number;
+
+  if (Math.abs(v - baseLuminance) < 0.01) {
+    // Exact match
+    r = BASE.r;
+    g = BASE.g;
+    b = BASE.b;
+  } else if (v > baseLuminance) {
+    // Brighter: interpolate to white
+    const t = (v - baseLuminance) / (255 - baseLuminance);
+    r = BASE.r + t * (WHITE.r - BASE.r);
+    g = BASE.g + t * (WHITE.g - BASE.g);
+    b = BASE.b + t * (WHITE.b - BASE.b);
+  } else {
+    // Darker: interpolate to black
+    const t = v / baseLuminance;
+    r = t * BASE.r;
+    g = t * BASE.g;
+    b = t * BASE.b;
+  }
+
+  r = Math.round(r);
+  g = Math.round(g);
+  b = Math.round(b);
+
+  return `#${r.toString(16).padStart(2, "0")}${g
+    .toString(16)
+    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`.toUpperCase();
+}
+
+/**
+ * Updates SVG <feFuncR/G/B> discrete tables with 5 colors.
+ * @param feFuncR SVG <feFuncR> element
+ * @param feFuncG SVG <feFuncG> element
+ * @param feFuncB SVG <feFuncB> element
+ * @param colors Array of 5 hex colors (from grayscaleToPalette)
+ */
+export function updateDiscreteFilter(
+  feFuncR: SVGFEFuncRElement,
+  feFuncG: SVGFEFuncGElement,
+  feFuncB: SVGFEFuncBElement,
+  colors: string[]
+): void {
+  if (colors.length !== 5) {
+    throw new Error("Exactly 5 colors required for discrete 5-step filter");
+  }
+
+  // Extract R, G, B from each color
+  const rValues: number[] = [];
+  const gValues: number[] = [];
+  const bValues: number[] = [];
+
+  for (const hex of colors) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    rValues.push(r);
+    gValues.push(g);
+    bValues.push(b);
+  }
+
+  // Update SVG attributes
+  feFuncR.setAttribute("type", "discrete");
+  feFuncR.setAttribute("tableValues", rValues.join(" "));
+
+  feFuncG.setAttribute("type", "discrete");
+  feFuncG.setAttribute("tableValues", gValues.join(" "));
+
+  feFuncB.setAttribute("type", "discrete");
+  feFuncB.setAttribute("tableValues", bValues.join(" "));
+}
