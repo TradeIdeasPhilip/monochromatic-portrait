@@ -1,6 +1,7 @@
 // === Paste this into a .ts file or <script type="module"> === (Mostly written by Grok)
 
 import { querySelectorAll } from "phil-lib/client-misc";
+import { FIGURE_SPACE } from "phil-lib/misc";
 
 export function showPaletteSamples(baseColor: string) {
   querySelectorAll(".delete-me", HTMLDivElement, 0).forEach((oldContainer) => {
@@ -8,7 +9,9 @@ export function showPaletteSamples(baseColor: string) {
   });
   const container = document.createElement("div");
   container.classList.add("delete-me");
-  container.style.fontFamily = "Arial, sans-serif";
+  // Make sure the numbers line up.
+  // Surprisingly few fonts have fixed with digits.
+  container.style.fontFamily = "Roboto, monospace";
   container.style.padding = "20px";
   container.style.background = "#f0f0f0";
   container.style.borderRadius = "8px";
@@ -46,7 +49,7 @@ export function showPaletteSamples(baseColor: string) {
     grayDiv.style.color = grayValue > 128 ? "black" : "white";
     grayDiv.style.fontSize = "12px";
     grayDiv.style.fontWeight = "bold";
-    grayDiv.textContent = `${grayValue}`;
+    grayDiv.textContent = `${Math.round((grayValue / 255) * 100)}%`;
     row.appendChild(grayDiv);
 
     // Right: Monochromatic palette
@@ -60,7 +63,19 @@ export function showPaletteSamples(baseColor: string) {
     monochromaticDiv.style.color = grayValue > 140 ? "black" : "white";
     monochromaticDiv.style.fontSize = "12px";
     monochromaticDiv.style.fontWeight = "bold";
-    monochromaticDiv.textContent = finalColor;
+    const r = parseInt(finalColor.slice(1, 3), 16);
+    const g = parseInt(finalColor.slice(3, 5), 16);
+    const b = parseInt(finalColor.slice(5, 7), 16);
+    function format(name: string, value: number) {
+      const number = Math.round((value / 255) * 100).toString();
+      const prefix = FIGURE_SPACE.repeat(3 - number.length);
+      const result = `${prefix}${name} = ${number}%`;
+      return result;
+    }
+    monochromaticDiv.textContent = `${format("r", r)}, ${format(
+      "g",
+      g
+    )}, ${format("b", b)}`;
     row.appendChild(monochromaticDiv);
 
     container.appendChild(row);
