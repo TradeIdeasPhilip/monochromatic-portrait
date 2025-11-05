@@ -21,23 +21,27 @@ const feFuncR = querySelector("feFuncR", SVGFEFuncRElement);
 const feFuncG = querySelector("feFuncG", SVGFEFuncGElement);
 const feFuncB = querySelector("feFuncB", SVGFEFuncBElement);
 
-function showColor(baseColor: string) {
+function setColors(baseColor: string, count: number) {
   showPaletteSamples(baseColor);
   updateDiscreteFilter(
     feFuncR,
     feFuncG,
     feFuncB,
-    initializedArray(5, (n) => {
-      const value = ((n + 0.5) / 5) * 256;
+    initializedArray(count, (n) => {
+      const value = Math.floor(((n + 0.5) / count) * 256);
       return grayscaleToPalette(value, baseColor);
     })
   );
 }
 
 const colorPicker = querySelector('input[type="color"]', HTMLInputElement);
+const countInput = querySelector('input[type="number"]', HTMLInputElement);
 
 function updateFromGUI() {
-  showColor(colorPicker.value);
+  const countValid = countInput.validity.valid && countInput.value != "";
+  const count = countValid ? countInput.valueAsNumber : 5;
+  setColors(colorPicker.value, count);
 }
 updateFromGUI();
 colorPicker.addEventListener("input", updateFromGUI);
+countInput.addEventListener("input", updateFromGUI);

@@ -102,7 +102,7 @@ export function showPaletteSamples(baseColor: string) {
 
     container.appendChild(row);
   }
-  showHeading("Colors Used");
+  showHeading("Smaller Pallette");
   const shortN = 5;
   for (let i = 0; i < shortN; i++) {
     const grayValue = Math.round(((i + 0.5) / shortN) * 255);
@@ -222,10 +222,6 @@ export function updateDiscreteFilter(
   feFuncB: SVGFEFuncBElement,
   colors: string[]
 ): void {
-  if (colors.length !== 5) {
-    throw new Error("Exactly 5 colors required for discrete 5-step filter");
-  }
-
   // Extract R, G, B from each color
   const rValues: number[] = [];
   const gValues: number[] = [];
