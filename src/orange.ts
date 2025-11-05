@@ -222,6 +222,20 @@ export function updateDiscreteFilter(
   feFuncB: SVGFEFuncBElement,
   colors: string[]
 ): void {
+  if (
+    !(
+      feFuncR instanceof SVGFEFuncRElement &&
+      feFuncG instanceof SVGFEFuncGElement &&
+      feFuncB instanceof SVGFEFuncBElement
+    )
+  ) {
+    // TypeScript sees these three types as equivalent.
+    // It will allow you to use them interchangeably at compile time.
+    // So I added this run time check.
+    console.error({ feFuncR, feFuncG, feFuncB });
+    throw new Error("wtf");
+  }
+
   // Extract R, G, B from each color
   const rValues: number[] = [];
   const gValues: number[] = [];
