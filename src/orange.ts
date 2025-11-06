@@ -80,13 +80,13 @@ export function showPaletteSamples(baseColor: string) {
 
     container.appendChild(row);
   }
-  showHeading("Smaller Pallette");
+  showHeading("Smaller Palette");
   const shortN = 5;
   for (let i = 0; i < shortN; i++) {
     const grayValue = Math.round(((i + 0.5) / shortN) * 255);
     showColor(grayValue);
   }
-  showHeading("Larger Pallette");
+  showHeading("Larger Palette");
   const longN = 10;
   for (let i = 0; i < longN; i++) {
     const grayValue = Math.round((i / (longN - 1)) * 255);

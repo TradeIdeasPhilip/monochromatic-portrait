@@ -9,7 +9,7 @@ I started from the same grayscale image as in art class.
 I created a function `grayscaleToPalette()`.
 The first input is the "value".
 That's the brightness of the original pixel and of the color that we are creating.
-The second input is the base color used to create the monochromatic pallette.  
+The second input is the base color used to create the monochromatic palette.
 If the requested value exactly matches the values of the base color, return that color.
 If the requested value is brighter, mix the base color with white to get a color with the right value.
 If the requested value is darker, mix the base color with black.
@@ -34,5 +34,6 @@ The process I used in art class caused the image to be flipped.
 I didn't know if that was a bug or a feature.
 I made the HTML version flip any time you click on it.
 
-[See it for yourself.](https://tradeideasphilip.github.io/monochromatic-portrait/)
+[See it for yourself](https://tradeideasphilip.github.io/monochromatic-portrait/).
 Adjust the settings and watch the results.
+Or watch [my video](https://youtu.be/PJoChELmEJg) on the subject.
