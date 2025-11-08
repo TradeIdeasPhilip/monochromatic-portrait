@@ -68,3 +68,9 @@ window.addEventListener("resume", () => {
   // Aimed at mobile.
   updateFromGUI();
 });
+requestAnimationFrame(() => {
+  // I tried visibilitychange, pageshow, and resume.  None of those helped on my phone.
+  // So here's a new thought:  Assume the system is updating the inputs immediately after
+  // initialization, before it reads the first event from the event queue.
+  updateFromGUI();
+});

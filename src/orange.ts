@@ -41,7 +41,7 @@ export function showPaletteSamples(baseColor: string) {
     // Left: Original grayscale
     const grayDiv = document.createElement("div");
     grayDiv.style.backgroundColor = grayColor;
-    grayDiv.style.width = "50%";
+    grayDiv.style.width = "33%";
     grayDiv.style.height = "40px";
     grayDiv.style.display = "flex";
     grayDiv.style.alignItems = "center";
@@ -55,7 +55,7 @@ export function showPaletteSamples(baseColor: string) {
     // Right: Monochromatic palette
     const monochromaticDiv = document.createElement("div");
     monochromaticDiv.style.backgroundColor = finalColor;
-    monochromaticDiv.style.width = "50%";
+    monochromaticDiv.style.width = "67%";
     monochromaticDiv.style.height = "40px";
     monochromaticDiv.style.display = "flex";
     monochromaticDiv.style.alignItems = "center";
