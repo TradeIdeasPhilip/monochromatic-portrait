@@ -45,3 +45,26 @@ function updateFromGUI() {
 updateFromGUI();
 colorPicker.addEventListener("input", updateFromGUI);
 countInput.addEventListener("input", updateFromGUI);
+
+// In case the browser puts us to sleep.
+document.addEventListener(
+  "visibilitychange",
+  function handleVisibilityChange() {
+    if (!document.hidden) {
+      // Page is now visible — re-sync UI
+      updateFromGUI();
+    }
+  }
+);
+window.addEventListener("pageshow", function handlePageShow(event) {
+  // pageshow fires when page is loaded from cache (including bfcache or tab restore)
+  if (event.persisted) {
+    // This means the page was restored from bfcache (very common on mobile)
+    updateFromGUI();
+  }
+});
+window.addEventListener("resume", () => {
+  // Page was unfrozen — definitely call update()
+  // Aimed at mobile.
+  updateFromGUI();
+});
