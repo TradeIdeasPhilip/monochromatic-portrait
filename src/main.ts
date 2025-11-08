@@ -63,14 +63,11 @@ window.addEventListener("pageshow", function handlePageShow(event) {
     updateFromGUI();
   }
 });
-window.addEventListener("resume", () => {
-  // Page was unfrozen — definitely call update()
-  // Aimed at mobile.
-  updateFromGUI();
-});
-requestAnimationFrame(() => {
-  // I tried visibilitychange, pageshow, and resume.  None of those helped on my phone.
-  // So here's a new thought:  Assume the system is updating the inputs immediately after
-  // initialization, before it reads the first event from the event queue.
-  updateFromGUI();
-});
+// Page was unfrozen — definitely call update()
+// Aimed at mobile.
+window.addEventListener("resume", updateFromGUI);
+// I tried visibilitychange, pageshow, and resume.  None of those helped on my phone.
+// So here's a new thought:  Assume the system is updating the inputs immediately after
+// initialization, before it reads the first event from the event queue.
+requestAnimationFrame(updateFromGUI);
+setTimeout(updateFromGUI, 10);
